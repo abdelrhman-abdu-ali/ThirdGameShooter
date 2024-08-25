@@ -72,3 +72,8 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+/Content/A_Surface_Footstep
+/Content/KiteDemo
+/Content/Lighting
+/Content/ParagonProps
+/Content/SampleMap
