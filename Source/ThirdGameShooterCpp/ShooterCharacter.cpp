@@ -17,7 +17,8 @@
 #include "Weapon.h"
 #include "Components/CapsuleComponent.h"
 #include "Ammo.h"
-
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "ThirdGameShooterCpp.h"
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
 	CameraBoom(CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"))),
@@ -1027,7 +1028,7 @@ void AShooterCharacter::UnHighlightInventorySlot()
 	HighlightedSlot = -1;
 }
 
-void AShooterCharacter::Footstep()
+EPhysicalSurface AShooterCharacter::GetSurfaceType()
 {
 	FHitResult HitResult;
 	const FVector Start{ GetActorLocation() };
@@ -1041,7 +1042,7 @@ void AShooterCharacter::Footstep()
 		End,
 		ECollisionChannel::ECC_Visibility,
 		QueryParams);
-	UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitResult.Actor->GetName());
+	return UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 }
 
 int32 AShooterCharacter::GetInterpLocationIndex()
