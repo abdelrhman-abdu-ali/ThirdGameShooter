@@ -41,6 +41,19 @@ protected:
 
 	void UpdateHitNumbers();
 
+	/** Called when something overlaps with the agro sphere */
+	UFUNCTION()
+	void AgroSphereOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable)
+	void SetStunned(bool Stunned);
+
 private:
 	/** Particles to spawn when hit by bullets */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
@@ -90,6 +103,32 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	float HitNumberDestroyTime;
 
+	/** Behavior tree for the AI Character */
+	UPROPERTY(EditAnywhere, Category = "Behavior Tree", meta = (AllowPrivateAccess = "true"))
+	class UBehaviorTree* BehaviorTree;
+
+	/** Point for the enemy to move to */
+	UPROPERTY(EditAnywhere, Category = "Behavior Tree", meta = (AllowPrivateAccess = "true", MakeEditWidget = "true"))
+	FVector PatrolPoint;
+
+	/** Second point for the enemy to move to */
+	UPROPERTY(EditAnywhere, Category = "Behavior Tree", meta = (AllowPrivateAccess = "true", MakeEditWidget = "true"))
+	FVector PatrolPoint2;
+
+	class AEnemyController* EnemyController;
+
+	/** Overlap sphere for when the enemy becomes hostile */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* AgroSphere;
+
+	/** True when playing the get hit animation */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	bool bStunned;
+
+	/** Chance of being stunned. 0: no stun chance, 1: 100% stun chance */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	float StunChance;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -105,4 +144,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowHitNumber(int32 Damage, FVector HitLocation, bool bHeadShot);
+
+	FORCEINLINE UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 };
