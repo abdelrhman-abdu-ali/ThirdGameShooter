@@ -87,7 +87,8 @@ AShooterCharacter::AShooterCharacter() :
 	HighlightedSlot(-1),
 	Health(100.f),
 	MaxHealth(100.f),
-	StunChance(.25f)
+	StunChance(.25f),
+	bDead(false)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -166,6 +167,7 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 
 void AShooterCharacter::Die()
 {
+	bDead = true;
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && DeathMontage)
 	{
@@ -778,7 +780,7 @@ void AShooterCharacter::SendBullet()
 				IBulletHitnterface* BulletHitInterface = Cast<IBulletHitnterface>(BeamHitResult.Actor.Get());
 				if (BulletHitInterface)
 				{
-					BulletHitInterface->BulletHit_Implementation(BeamHitResult);
+					BulletHitInterface->BulletHit_Implementation(BeamHitResult, this, GetController());
 				}
 
 				AEnemy* HitEnemy = Cast<AEnemy>(BeamHitResult.Actor.Get());

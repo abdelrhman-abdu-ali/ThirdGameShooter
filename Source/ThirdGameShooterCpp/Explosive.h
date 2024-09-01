@@ -44,6 +44,6 @@ private:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void BulletHit_Implementation(FHitResult HitResult) override;
+	virtual void BulletHit_Implementation(FHitResult HitResult, AActor* Shooter, AController* ShooterControler) override;
 
 };

@@ -36,7 +36,7 @@ void AExplosive::Tick(float DeltaTime)
 
 }
 
-void AExplosive::BulletHit_Implementation(FHitResult HitResult)
+void AExplosive::BulletHit_Implementation(FHitResult HitResult, AActor* Shooter, AController* ShooterControler)
 {
 	if (ImpactSound)
 	{
@@ -54,10 +54,19 @@ void AExplosive::BulletHit_Implementation(FHitResult HitResult)
 	for (auto Actor : OverlappingActors)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Actor damaged by explosive: %s"), *Actor->GetName());
+
+		UGameplayStatics::ApplyDamage(
+			Actor,
+			Damage,
+			ShooterControler,
+			Shooter,
+			UDamageType::StaticClass()
+		);
 	}
 
 	Destroy();
 
 }
+
 
 
