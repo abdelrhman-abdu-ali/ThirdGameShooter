@@ -76,6 +76,36 @@ protected:
 	UFUNCTION(BlueprintPure)
 	FName GetAttackSectionName();
 
+	UFUNCTION()
+	void OnLeftWeaponOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// Activate/deactivate collision for weapon boxes
+	UFUNCTION(BlueprintCallable)
+	void ActivateLeftWeapon();
+	UFUNCTION(BlueprintCallable)
+	void DeactivateLeftWeapon();
+	UFUNCTION(BlueprintCallable)
+	void ActivateRightWeapon();
+	UFUNCTION(BlueprintCallable)
+	void DeactivateRightWeapon();
+
+	void DoDamage(class AShooterCharacter* Victim);
+	void SpawnBlood(AShooterCharacter* Victim, FName SocketName);
+
+	// Attempt to stun character
+	void StunCharacter(AShooterCharacter* Victim);
+
+	void ResetCanAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishDeath();
+
+	UFUNCTION()
+	void DestroyEnemy();
+
 private:
 	/** Particles to spawn when hit by bullets */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
@@ -86,7 +116,7 @@ private:
 	class USoundCue* ImpactSound;
 
 	/** Current health of the enemy */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	float Health;
 
 	/** Maximum health of the enemy */
@@ -168,6 +198,46 @@ private:
 	FName AttackRFast;
 	FName AttackL;
 	FName AttackR;
+
+	/** Collision volume for the left weapon */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* LeftWeaponCollision;
+
+	/** Collision volume for the right weapon */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* RightWeaponCollision;
+
+	/** Base damage for enemy */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	float BaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	FName LeftWeaponSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	FName RightWeaponSocket;
+
+	/** True when Enemy can attack */
+	UPROPERTY(VisibleAnywhere, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	bool bCanAttack;
+
+	FTimerHandle AttackWaitTimer;
+
+	/** Minimum wait time between attacks */
+	UPROPERTY(EditAnywhere, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	float AttackWaitTime;
+
+	/** Death anim montage for the enemy */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* DeathMontage;
+
+	bool bDying;
+
+	FTimerHandle DeathTimer;
+
+	/** Time after death until Destroy */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	float DeathTime;
 
 public:
 	// Called every frame

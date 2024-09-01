@@ -8,7 +8,7 @@
 #include "Explosive.generated.h"
 
 UCLASS()
-class THIRDGAMESHOOTERCPP_API AExplosive : public AActor, public IBulletHitnterface
+class THIRDGAMESHOOTERCPP_API AExplosive : public AActor
 {
 	GENERATED_BODY()
 	
@@ -34,5 +34,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void BulletHit_Implementation(FHitResult HitResult) override;
+	
 };
